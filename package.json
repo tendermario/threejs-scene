@@ -1,0 +1,15 @@
+{
+  "name": "threejs-scene",
+  "version": "1.0.0",
+  "description": "Test scene creation",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Eventually put in jest if you want"
+  },
+  "author": "Mario Viens",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "three": "^0.90.0"
+  }
+}
