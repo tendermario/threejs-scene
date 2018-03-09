@@ -1,35 +1,30 @@
 // // Helper functions
 
-// function getTexturesFromAtlasFile ( atlasImgUrl, tilesNum ) {
-//   var textures = [];
-//   for ( var i = 0; i < tilesNum; i ++ ) {
-//     textures[ i ] = new THREE.Texture();
-//   }
+function getTexturesFromAtlasFile ( atlasImgUrl, tilesNum ) {
+  var textures = [];
+  for ( var i = 0; i < tilesNum; i ++ ) {
+    textures[ i ] = new THREE.Texture();
+  }
 
-//   var imageObj = new Image();
+  var imageObj = new Image();
+  imageObj.onload = function() {
+    var canvas, context;
+    var tileWidth = imageObj.height;
 
-//   imageObj.onload = function() {
+    for ( var i = 0; i < textures.length; i ++ ) {
+      canvas = document.createElement( 'canvas' );
+      context = canvas.getContext( '2d' );
+      canvas.height = tileWidth;
+      canvas.width = tileWidth;
+      context.drawImage( imageObj, tileWidth * i, 0, tileWidth, tileWidth, 0, 0, tileWidth, tileWidth );
+      textures[ i ].image = canvas
+      textures[ i ].needsUpdate = true;
+    }
+  };
 
-//     var canvas, context;
-//     var tileWidth = imageObj.height;
-
-//     for ( var i = 0; i < textures.length; i ++ ) {
-
-//       canvas = document.createElement( 'canvas' );
-//       context = canvas.getContext( '2d' );
-//       canvas.height = tileWidth;
-//       canvas.width = tileWidth;
-//       context.drawImage( imageObj, tileWidth * i, 0, tileWidth, tileWidth, 0, 0, tileWidth, tileWidth );
-//       textures[ i ].image = canvas
-//       textures[ i ].needsUpdate = true;
-
-//     }
-
-//   };
-
-//   imageObj.src = atlasImgUrl;
-//   return textures;
-// }
+  imageObj.src = atlasImgUrl;
+  return textures;
+}
 
 // Visualizer object
 
@@ -58,7 +53,17 @@ function Visualizer() {
     this.scene.add(this.light)
   }
   this.initBackground = function () {
-    this.scene.background = new THREE.Color( 0xf0f0f0 );
+    var texture = new THREE.TextureLoader().load( "assets/textures/water.jpg" );
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 4, 4 );
+    this.scene.background = texture;
+  }
+  this.initControls = function () {
+    this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
+    this.controls.enableZoom = false;
+    this.controls.enablePan = false;
+    this.controls.enableDamping = true;
   }
   this.animate = function () {
     this.cube.rotation.x += .1
@@ -77,6 +82,7 @@ function Visualizer() {
     this.initObjects()
     this.initLights()
     this.initBackground()
+    this.initControls()
   }
 }
 var Viz = new Visualizer()
