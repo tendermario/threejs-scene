@@ -53,10 +53,16 @@ function Visualizer() {
     this.scene.add(this.light)
   }
   this.initBackground = function () {
-    var texture = new THREE.TextureLoader().load( "assets/textures/water.jpg" );
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set( 4, 4 );
+    var texture = new THREE.CubeTextureLoader()
+    .setPath( 'assets/textures/cube/Bridge2/' )
+    .load( [
+      'posx.jpg',
+      'negx.jpg',
+      'posy.jpg',
+      'negy.jpg',
+      'posz.jpg',
+      'negz.jpg'
+    ] );
     this.scene.background = texture;
   }
   this.initControls = function () {
