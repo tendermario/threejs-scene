@@ -33,7 +33,8 @@ function getTexturesFromCubeMapFile ( atlasImgUrl, tilesNum = 6, tileY = 1, rear
     rearrangedTextures[3] = textures[5]
     rearrangedTextures[4] = textures[3]
     rearrangedTextures[5] = textures[2]
-    textureRotate(rearrangedTextures[3]);
+    textureRotate(rearrangedTextures[3])
+    textureInvert(rearrangedTextures[3])
     return rearrangedTextures
   }
   return textures;
@@ -42,8 +43,10 @@ function getTexturesFromCubeMapFile ( atlasImgUrl, tilesNum = 6, tileY = 1, rear
 // Function for rotating a texture
 function textureRotate (texture, quarterRotations = 1) {
   texture.center.set(0.5,0.5);
-  texture.repeat.x = -1;
   texture.rotation = Math.PI/2 * quarterRotations;
+}
+function textureInvert(texture) {
+  texture.repeat.x = -1;
 }
 
 // Function for turning an array of textures into a cube
@@ -81,36 +84,15 @@ function Visualizer() {
   this.initLights = function () {
     this.light = new THREE.PointLight(0xFFFF00)
     this.light.position.set(10, 0, 25)
-    // this.scene.add(this.light)
+    this.scene.add(this.light)
   }
   this.initBackground = function () {
-    // this.loadBridgeBackground();
     this.loadPanorama();
-    // this.loadDemoPanorama();
-  }
-  this.loadBridgeBackground = function () {
-    const texture = new THREE.CubeTextureLoader()
-    .setPath( 'assets/textures/cube/Bridge2/' )
-    .load( [
-      'posx.jpg',
-      'negx.jpg',
-      'posy.jpg',
-      'negy.jpg',
-      'posz.jpg',
-      'negz.jpg'
-    ] );
-    this.scene.background = texture;
   }
   this.loadPanorama = function () {
     const cubeMap = getTexturesFromCubeMapFile("assets/panoramas/panorama.png", 6, 2, true)
     const cubeBackground = getMeshFromCubeTextures(cubeMap, 100)
     this.scene.add(cubeBackground);
-  }
-  this.loadDemoPanorama = function () {
-    const textures = getTexturesFromCubeMapFile( "assets/textures/cube/sun_temple_stripe.jpg");
-    const cubeBackground = getMeshFromCubeTextures(textures, 1000)
-    cubeBackground.position.set(20, 0, 0);
-    this.scene.add( cubeBackground );
   }
   this.initControls = function () {
     this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
