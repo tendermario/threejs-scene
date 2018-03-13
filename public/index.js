@@ -63,52 +63,57 @@ function getMeshFromCubeTextures(textures, size = 10) {
 
 // Visualizer object
 function Visualizer() {
-  this.initScene = function () {
+  this.initScene = () => {
     this.scene = new THREE.Scene()
   }
-  this.initCamera = function () {
+  this.initCamera = () => {
     this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 )
     this.camera.position.z = 1
   }
-  this.initRenderer = function () {
+  this.initRenderer = () => {
     this.renderer = new THREE.WebGLRenderer()
     this.renderer.setSize( window.innerWidth, window.innerHeight )
     document.body.appendChild( this.renderer.domElement )
   }
-  this.initObjects = function () {
+  this.initObjects = () => {
     const geometry = new THREE.BoxGeometry(2, 2, 2)
-    const material = new THREE.MeshLambertMaterial({color: 0xfd59d7})
+    const material = new THREE.MeshBasicMaterial({color: 0xfd59d7})
     this.cube = new THREE.Mesh(geometry, material)
-    // this.scene.add(this.cube)
+    this.scene.add(this.cube)
   }
-  this.initLights = function () {
+  this.initLights = () => {
     this.light = new THREE.PointLight(0xFFFF00)
     this.light.position.set(10, 0, 25)
     this.scene.add(this.light)
   }
-  this.initBackground = function () {
+  this.initBackground = () => {
     this.loadPanorama();
   }
-  this.loadPanorama = function () {
+  this.loadPanorama = () => {
     const cubeMap = getTexturesFromCubeMapFile("assets/panoramas/panorama.png", 6, 2, true)
     const cubeBackground = getMeshFromCubeTextures(cubeMap, 100)
     this.scene.add(cubeBackground);
   }
-  this.initControls = function () {
+  this.initControls = () => {
     this.controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
     this.controls.enablePan = false;
   }
-  this.animate = function () {
-    this.cube.rotation.x += .1
-    this.cube.rotation.y += .1
+  this.animate = () => {
+    if (this.cube) {
+      this.cube.rotation.x += .1
+      this.cube.rotation.y += .1
+    }
     this.camera.updateProjectionMatrix()
   }
-  this.animationLoop = function () {
-    requestAnimationFrame( this.animationLoop.bind(this) ) 
-    this.animate();
+  this.renderScene = () => {
     this.renderer.render(this.scene, this.camera)
   }
-  this.initialize = function () {
+  this.animationLoop = () => {
+    requestAnimationFrame( this.animationLoop.bind(this) ) 
+    this.animate();
+    this.renderScene();
+  }
+  this.initialize = () => {
     this.initScene()
     this.initCamera()
     this.initRenderer()
