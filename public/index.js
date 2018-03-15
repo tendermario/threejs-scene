@@ -76,10 +76,10 @@ function Visualizer() {
     document.body.appendChild( this.renderer.domElement )
   }
   this.initObjects = () => {
-    const geometry = new THREE.BoxGeometry(2, 2, 2)
-    const material = new THREE.MeshBasicMaterial({color: 0xfd59d7})
-    this.cube = new THREE.Mesh(geometry, material)
-    this.scene.add(this.cube)
+    // const geometry = new THREE.BoxGeometry(2, 2, 2)
+    // const material = new THREE.MeshBasicMaterial({color: 0xfd59d7})
+    // this.cube = new THREE.Mesh(geometry, material)
+    // this.scene.add(this.cube)
   }
   this.initLights = () => {
     this.light = new THREE.PointLight(0xFFFF00)
@@ -87,7 +87,29 @@ function Visualizer() {
     this.scene.add(this.light)
   }
   this.initBackground = () => {
-    this.loadPanorama();
+    // this.loadPanorama();
+    this.loadFlatBackground();
+    // this.loadSkybox();
+  }
+  this.loadFlatBackground = () => {
+    var sphereGeo = new THREE.SphereGeometry(40, 16, 8);
+    // THREE.TextureLoader.crossOrigin = '';
+    var loader = new THREE.TextureLoader
+    var texture = loader.load('http://i.imgur.com/3tU4Vig.jpg');
+    this.scene.background = texture;
+  }
+  this.loadSkybox = () => {
+    var texture = new THREE.CubeTextureLoader()
+    .setPath( 'assets/textures/cube/Bridge2/' )
+    .load( [
+      'posx.jpg',
+      'negx.jpg',
+      'posy.jpg',
+      'negy.jpg',
+      'posz.jpg',
+      'negz.jpg'
+    ] );
+    this.scene.background = texture;
   }
   this.loadPanorama = () => {
     const cubeMap = getTexturesFromCubeMapFile("assets/panoramas/panorama.png", 6, 2, true)
