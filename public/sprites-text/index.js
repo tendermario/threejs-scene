@@ -3,59 +3,51 @@
 function makeTextSprite(message, parameters) {
   if (parameters === undefined) parameters = {};
 
-  var fontface = parameters.hasOwnProperty("fontface") ?
+  const fontface = parameters.hasOwnProperty("fontface") ?
     parameters["fontface"] : "Arial";
 
-  var fontsize = parameters.hasOwnProperty("fontsize") ?
-    parameters["fontsize"] : 18;
+  const fontsize = parameters.hasOwnProperty("fontsize") ?
+    parameters["fontsize"] : 120;
 
-  var borderThickness = parameters.hasOwnProperty("borderThickness") ?
+  const borderThickness = parameters.hasOwnProperty("borderThickness") ?
     parameters["borderThickness"] : 4;
 
-  var borderColor = parameters.hasOwnProperty("borderColor") ?
+  const borderColor = parameters.hasOwnProperty("borderColor") ?
     parameters["borderColor"] : { r: 0, g: 0, b: 0, a: 1.0 };
 
-  var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+  const backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
     parameters["backgroundColor"] : { r: 255, g: 255, b: 255, a: 1.0 };
 
-  var canvas = document.createElement('canvas');
-  var context = canvas.getContext('2d');
-  context.font = "Bold " + fontsize + "px " + fontface;
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  const font = fontsize + 'px ' + fontface;
+  
+  // Set canvas to text size
+  context.font = font;
+  const width = context.measureText(message).width;
+  canvas.width = width
+  canvas.height = fontsize + 40
 
-  // get size data (height depends only on font size)
-  var metrics = context.measureText(message);
-  var textWidth = metrics.width;
-
-  // background color
-  context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
-    + backgroundColor.b + "," + backgroundColor.a + ")";
-  // border color
-  context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
-    + borderColor.b + "," + borderColor.a + ")";
-
-  context.lineWidth = borderThickness;
-  roundRect(context, borderThickness / 2, borderThickness / 2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
-  // 1.4 is extra height factor for text below baseline: g,j,p,q.
-
-  // text color
-  context.fillStyle = "rgba(0, 0, 0, 1.0)";
-
-  context.fillText(message, borderThickness, fontsize + borderThickness);
+  // Set context's font
+  context.font = font;
+  context.fillStyle = "rgba(225, 225, 225, 1.0)"; // font color
+  // Write text
+  context.fillText(message, 0, fontsize - 20);
 
   // canvas contents will be used for a texture
-  var texture = new THREE.Texture(canvas)
+  const texture = new THREE.Texture(canvas)
   texture.needsUpdate = true;
+  const spriteMaterial = new THREE.SpriteMaterial(
+    { map: texture });
+  const sprite = new THREE.Sprite(spriteMaterial);
+  sprite.position.set(0,0,10)
+  sprite.scale.set(10, 5, 1);
+    return sprite;
+  }
 
-  var spriteMaterial = new THREE.SpriteMaterial(
-    { map: texture, useScreenCoordinates: false });
-  var sprite = new THREE.Sprite(spriteMaterial);
-  sprite.scale.set(100, 50, 1.0);
-  return sprite;
-}
-
-// function for drawing rounded rectangles
-function roundRect(ctx, x, y, w, h, r) 
-{
+  // function for drawing rounded rectangles
+  function roundRect(ctx, x, y, w, h, r) 
+  {
     ctx.beginPath();
     ctx.moveTo(x+r, y);
     ctx.lineTo(x+w-r, y);
@@ -413,9 +405,6 @@ function Visualizer() {
     const atv = links[0].atv;
     const spriteMap = new THREE.TextureLoader().load("../assets/textures/sprite2.png");
     const spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: 0xffffff });
-    // for (let hotspot in links) {
-
-    // }
     const sprite = new THREE.Sprite(spriteMaterial);
 
     sprite.position.z = 10
@@ -423,16 +412,9 @@ function Visualizer() {
     this.scene.add(sprite);
   }
   this.loadSpriteText = () => {
-    var spritey = makeTextSprite(
-      " Hello, ",
-      {
-        fontsize: 24,
-        borderColor: { r: 255, g: 0, b: 0, a: 1.0 },
-        backgroundColor: { r: 255, g: 100, b: 100, a: 0.8 }
-      }
-    );
-    spritey.position.set(-85, 105, 55);
-    this.scene.add(spritey);
+    var sprite = makeTextSprite(
+      "uForis VR"
+    this.scene.add(sprite);
   }
   this.loadNorth = () => {
     const spriteMap = new THREE.TextureLoader().load("../assets/textures/sprite2.png");
@@ -451,7 +433,7 @@ function Visualizer() {
   this.initBackground = () => {
     this.loadPanorama();
     // this.loadFlatBackground();
-    this.loadSkybox();
+    // this.loadSkybox();
   }
   this.loadFlatBackground = () => {
     const sphereGeo = new THREE.SphereGeometry(40, 16, 8);
