@@ -413,7 +413,7 @@ function Visualizer() {
   }
   this.loadSpriteText = () => {
     var sprite = makeTextSprite(
-      "uForis VR"
+      "uForis VR")
     this.scene.add(sprite);
   }
   this.loadNorth = () => {
