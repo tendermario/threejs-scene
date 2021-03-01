@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.2",
-    "three": "^0.90.0"
+    "three": "^0.125.0"
   }
 }
